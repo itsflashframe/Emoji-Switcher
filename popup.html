@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Emoji Switcher</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#0e0e11;--surf:#18181c;--surf2:#222228;--border:#2e2e38;--accent:#ffd600;--text:#f0f0f5;--muted:#888899;}
+body{width:340px;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;font-size:14px;}
+.hdr{background:linear-gradient(135deg,#1a1a22,#0e0e14);padding:14px 16px 12px;border-bottom:1px solid var(--border);}
+.hdr-row{display:flex;align-items:center;gap:9px;margin-bottom:3px;}
+.hdr-icon{width:30px;height:30px;background:var(--accent);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;box-shadow:0 2px 10px rgba(255,214,0,.2);}
+.hdr-title{font-family:'Courier New',monospace;font-size:12px;font-weight:700;letter-spacing:.06em;flex:1;}
+.hdr-sub{font-size:11px;color:var(--muted);padding-left:39px;}
+.expand{width:24px;height:24px;border-radius:6px;background:var(--surf2);border:1px solid var(--border);color:var(--muted);cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .12s;}
+.expand:hover{background:var(--border);color:var(--text);border-color:rgba(255,214,0,.4);}
+.expand svg{width:12px;height:12px;}
+.lbl{font-size:10px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);padding:10px 16px 6px;}
+.list{overflow-y:auto;max-height:340px;padding:0 16px 8px;scrollbar-width:thin;scrollbar-color:var(--border) transparent;}
+.list::-webkit-scrollbar{width:4px;}
+.list::-webkit-scrollbar-thumb{background:var(--border);border-radius:4px;}
+.card{display:flex;align-items:center;gap:9px;padding:8px 10px;background:var(--surf);border:1.5px solid var(--border);border-radius:11px;cursor:pointer;position:relative;transition:all .12s;margin-bottom:6px;}
+.card:last-child{margin-bottom:0;}
+.card:hover{border-color:rgba(255,214,0,.35);background:var(--surf2);}
+.card.sel{border-color:var(--accent);background:rgba(255,214,0,.05);}
+.card.sel::after{content:'✓';position:absolute;right:9px;top:50%;transform:translateY(-50%);font-size:12px;font-weight:700;color:var(--accent);}
+.bdg{width:31px;height:31px;border-radius:8px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;text-align:center;line-height:1.2;}
+.inf{flex:1;min-width:0;}
+.inf-name{font-weight:600;font-size:12px;margin-bottom:1px;}
+.inf-desc{font-size:10.5px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.prev{display:flex;gap:2px;align-items:center;flex-shrink:0;}
+.prev img{width:19px;height:19px;object-fit:contain;opacity:0;transition:opacity .2s;}
+.prev img.ok{opacity:1;}
+.prev .nat{font-size:15px;line-height:1;}
+.div{height:1px;background:var(--border);margin:8px 16px;}
+.ftr{padding:8px 16px 13px;display:flex;flex-direction:column;gap:6px;}
+.btn{width:100%;padding:9px;background:var(--accent);color:#0e0e11;border:none;border-radius:10px;font-size:13px;font-weight:600;cursor:pointer;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;transition:all .12s;}
+.btn:hover{background:#ffe033;transform:translateY(-1px);box-shadow:0 4px 14px rgba(255,214,0,.25);}
+.btn:active{transform:scale(.98);}
+.status{display:flex;align-items:center;justify-content:center;gap:6px;min-height:16px;}
+.dot{width:6px;height:6px;border-radius:50%;background:var(--muted);flex-shrink:0;transition:background .3s;}
+.dot.on{background:#4ec94e;box-shadow:0 0 6px rgba(78,201,78,.5);}
+.stxt{font-size:11px;color:var(--muted);transition:color .3s;}
+.stxt.on{color:#4ec94e;}
+</style>
+</head>
+<body>
+<div class="hdr">
+  <div class="hdr-row">
+    <div class="hdr-icon">😄</div>
+    <div class="hdr-title">EMOJI SWITCHER</div>
+    <button class="expand" id="expandBtn" title="Open in tab (Alt+E)">
+      <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M4.5 2H2.5A.5.5 0 0 0 2 2.5v7A.5.5 0 0 0 2.5 10h7A.5.5 0 0 0 10 9.5V7.5"/>
+        <path d="M7 2h3v3"/><path d="M10 2 5.5 6.5"/>
+      </svg>
+    </button>
+  </div>
+  <div class="hdr-sub">Choose your emoji style across the web</div>
+</div>
+<div class="lbl">Select Style</div>
+<div class="list">
+
+  <div class="card" data-style="native">
+    <div class="bdg" style="background:#2a2a38;color:#aaa">SYS</div>
+    <div class="inf"><div class="inf-name">Native / System</div><div class="inf-desc">Your OS default (macOS, Windows…)</div></div>
+    <div class="prev"><span class="nat">😊</span><span class="nat">🔥</span><span class="nat">🎉</span></div>
+  </div>
+
+  <div class="card" data-style="ios">
+    <div class="bdg" style="background:#1c2a3a;color:#60aaff">iOS</div>
+    <div class="inf"><div class="inf-name">iOS / Apple</div><div class="inf-desc">Classic rounded Apple style</div></div>
+    <div class="prev">
+      <img src="https://emojicdn.elk.sh/%F0%9F%98%8A?style=apple" alt="😊">
+      <img src="https://emojicdn.elk.sh/%F0%9F%94%A5?style=apple" alt="🔥">
+      <img src="https://emojicdn.elk.sh/%F0%9F%8E%89?style=apple" alt="🎉">
+    </div>
+  </div>
+
+  <div class="card" data-style="twitter">
+    <div class="bdg" style="background:#1a3a5c;color:#4e9fff">TWX</div>
+    <div class="inf"><div class="inf-name">Twitter / X (Twemoji)</div><div class="inf-desc">Flat colorful — same as Twitter/X</div></div>
+    <div class="prev">
+      <img src="https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/svg/1f60a.svg" alt="😊">
+      <img src="https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/svg/1f525.svg" alt="🔥">
+      <img src="https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/svg/1f389.svg" alt="🎉">
+    </div>
+  </div>
+
+  <div class="card" data-style="google">
+    <div class="bdg" style="background:#1a3a2a;color:#4ec94e">NOTo</div>
+    <div class="inf"><div class="inf-name">Google (Noto Emoji)</div><div class="inf-desc">Rounded Android style by Google</div></div>
+    <div class="prev">
+      <img src="https://cdn.jsdelivr.net/gh/googlefonts/noto-emoji@main/svg/emoji_u1f60a.svg" alt="😊">
+      <img src="https://cdn.jsdelivr.net/gh/googlefonts/noto-emoji@main/svg/emoji_u1f525.svg" alt="🔥">
+      <img src="https://cdn.jsdelivr.net/gh/googlefonts/noto-emoji@main/svg/emoji_u1f389.svg" alt="🎉">
+    </div>
+  </div>
+
+  <div class="card" data-style="facebook">
+    <div class="bdg" style="background:#1a2a3a;color:#4267b2">META</div>
+    <div class="inf"><div class="inf-name">Facebook / Meta</div><div class="inf-desc">Emoji on Facebook &amp; Instagram</div></div>
+    <div class="prev">
+      <img src="https://emojicdn.elk.sh/%F0%9F%98%8A?style=facebook" alt="😊">
+      <img src="https://emojicdn.elk.sh/%F0%9F%94%A5?style=facebook" alt="🔥">
+      <img src="https://emojicdn.elk.sh/%F0%9F%8E%89?style=facebook" alt="🎉">
+    </div>
+  </div>
+
+  <div class="card" data-style="joypixels">
+    <div class="bdg" style="background:#3a1a2a;color:#ff5c8d">JOY</div>
+    <div class="inf"><div class="inf-name">JoyPixels</div><div class="inf-desc">Vibrant pixel-clean emoji set</div></div>
+    <div class="prev">
+      <img src="https://cdn.jsdelivr.net/npm/joypixels@8.0.0/assets/svg/1f60a.svg" alt="😊">
+      <img src="https://cdn.jsdelivr.net/npm/joypixels@8.0.0/assets/svg/1f525.svg" alt="🔥">
+      <img src="https://cdn.jsdelivr.net/npm/joypixels@8.0.0/assets/svg/1f389.svg" alt="🎉">
+    </div>
+  </div>
+
+  <div class="card" data-style="openmoji">
+    <div class="bdg" style="background:#3a2a1a;color:#ff9d44">OMJ</div>
+    <div class="inf"><div class="inf-name">OpenMoji</div><div class="inf-desc">Open-source expressive outlines</div></div>
+    <div class="prev">
+      <img src="https://cdn.jsdelivr.net/npm/openmoji@15.0.0/color/svg/1F60A.svg" alt="😊">
+      <img src="https://cdn.jsdelivr.net/npm/openmoji@15.0.0/color/svg/1F525.svg" alt="🔥">
+      <img src="https://cdn.jsdelivr.net/npm/openmoji@15.0.0/color/svg/1F389.svg" alt="🎉">
+    </div>
+  </div>
+
+  <div class="card" data-style="blobmoji">
+    <div class="bdg" style="background:#2a3a1a;color:#aadd44">BLOB</div>
+    <div class="inf"><div class="inf-name">Blobmoji</div><div class="inf-desc">Old-school Google blob emoji</div></div>
+    <div class="prev">
+      <img src="https://cdn.jsdelivr.net/gh/C1710/blobmoji@main/svg/emoji_u1f60a.svg" alt="😊">
+      <img src="https://cdn.jsdelivr.net/gh/C1710/blobmoji@main/svg/emoji_u1f525.svg" alt="🔥">
+      <img src="https://cdn.jsdelivr.net/gh/C1710/blobmoji@main/svg/emoji_u1f389.svg" alt="🎉">
+    </div>
+  </div>
+
+
+  <div class="card" data-style="samsung">
+    <div class="bdg" style="background:#1a2a3a;color:#1a98ff">SAM</div>
+    <div class="inf"><div class="inf-name">Samsung One UI</div><div class="inf-desc">Samsung Galaxy phone style</div></div>
+    <div class="prev">
+      <img src="https://cdn.jsdelivr.net/gh/realityripple/emoji/oneui/1f60a.png" alt="😊">
+      <img src="https://cdn.jsdelivr.net/gh/realityripple/emoji/oneui/1f525.png" alt="🔥">
+      <img src="https://cdn.jsdelivr.net/gh/realityripple/emoji/oneui/1f389.png" alt="🎉">
+    </div>
+  </div>
+
+  <div class="card" data-style="whatsapp">
+    <div class="bdg" style="background:#1a3a22;color:#25d366">WA</div>
+    <div class="inf"><div class="inf-name">WhatsApp</div><div class="inf-desc">Emoji as seen in WhatsApp chats</div></div>
+    <div class="prev">
+      <img src="https://cdn.jsdelivr.net/gh/realityripple/emoji/whatsapp/1f60a.png" alt="😊">
+      <img src="https://cdn.jsdelivr.net/gh/realityripple/emoji/whatsapp/1f525.png" alt="🔥">
+      <img src="https://cdn.jsdelivr.net/gh/realityripple/emoji/whatsapp/1f389.png" alt="🎉">
+    </div>
+  </div>
+
+  <div class="card" data-style="windows">
+    <div class="bdg" style="background:#2a1a3a;color:#b08fff">WIN</div>
+    <div class="inf"><div class="inf-name">Windows (Fluent 3D)</div><div class="inf-desc">Microsoft 3D Fluent Emoji</div></div>
+    <div class="prev">
+      <img src="https://cdn.jsdelivr.net/gh/shuding/fluentui-emoji-unicode/assets/1f60a_3d.png" alt="😊">
+      <img src="https://cdn.jsdelivr.net/gh/shuding/fluentui-emoji-unicode/assets/1f525_3d.png" alt="🔥">
+      <img src="https://cdn.jsdelivr.net/gh/shuding/fluentui-emoji-unicode/assets/1f389_3d.png" alt="🎉">
+    </div>
+  </div>
+
+</div>
+<div class="div"></div>
+<div class="ftr">
+  <button class="btn" id="applyBtn">Apply to Current Tab</button>
+  <p style="text-align:center;font-size:10px;color:var(--muted);opacity:0.6;">Reload the page after applying for best results</p>
+  <div class="status">
+    <div class="dot" id="dot"></div>
+    <span class="stxt" id="stxt">Select a style and apply</span>
+  </div>
+</div>
+<script src="popup.js"></script>
+</body>
+</html>
